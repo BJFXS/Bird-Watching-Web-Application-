@@ -1,0 +1,112 @@
+[[extend 'layout.html']]
+
+<style>
+[v-cloak] {
+    display: none;
+}
+
+.table-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.table-container .table, .table-container .graph-container {
+    width: 48%;
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th:nth-child(1), td:nth-child(1) {
+    width: 20%;
+}
+
+th:nth-child(2), td:nth-child(2) {
+    width: 25%;
+    padding-right: 40px;
+}
+
+th:nth-child(3), td:nth-child(3) {
+    width: 55%;
+}
+
+.graph-container {
+    width: 48%;
+    margin-bottom: 20px;
+}
+
+#speciesChart {
+    width: 100%;
+    height: 400px; /* Adjusted height */
+}
+</style>
+
+<div class="section" id="app" v-cloak>
+  <div v-if="contributors.length" class="table">
+    <h1 class="title">Top 5 Contributors</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Observer ID</th>
+          <th>Checklist Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="contributor in contributors" :key="contributor.observer_id">
+          <td>{{ contributor.observer_id }}</td>
+          <td>{{ contributor.checklist_count }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h1 class="title">Species in the Region</h1>
+  <h2>clicks on the species, you can get a time graph</h2>
+  <div class="table-container">
+    <div v-if="speciesData.length" class="table">
+      <table>
+        <thead>
+          <tr>
+            <th>Common Name</th>
+            <th>Sighting Count</th>
+            <th>Checklist Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="species in speciesData" :key="species.common_name" @click="fetchSpeciesData(species.common_name)">
+            <td>{{ species.common_name }}</td>
+            <td>{{ species.sighting_count }}</td>
+            <td>{{ species.checklist_count }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div v-if="showGraph" class="graph-container"> <!-- Modified: Added class for styling -->
+      <h1 class="subtitle">{{ graphTitle }}</h1>
+      <canvas id="speciesChart"></canvas>
+    </div>
+
+  </div>
+</div>
+
+[[block page_scripts]]
+<script>
+  let location_callback_url = "[[=XML(location_callback_url)]]";
+  let species_data_url = "[[=XML(species_data_url)]]";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script src="js/location.js"></script>
+[[end]]

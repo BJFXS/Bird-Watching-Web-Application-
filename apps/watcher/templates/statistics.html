@@ -1,0 +1,165 @@
+[[extend 'layout.html']]
+
+
+<style>
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: #f7f9fc;
+    color: #333;
+  }
+
+  .searchbar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .bird-box {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 15px;
+    background: white;
+    margin-bottom: 10px;
+  }
+
+  .bird-box:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+  }
+
+  .bird-box p {
+    margin: 5px 0;
+    color: #555;
+  }
+
+  .scrollable-list {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #dbdbdb;
+    padding: 15px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .list-container {
+    margin-bottom: 20px;
+  }
+
+  .box {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+  }
+
+  .box:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+  }
+
+  .button {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 50px;
+  }
+
+  .button:hover {
+    background-color: #1e90ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .field.is-grouped .control {
+    margin-right: 10px;
+  }
+
+  .columns {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .column {
+    padding: 20px;
+  }
+
+  .title {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+</style>
+
+<div class="section" id="app" v-cloak>
+  <!-- Vue.js template for bird-watching app -->
+
+  <!-- Title moved to top -->
+  <h2 class="title is-size-4 list-header">User's Bird Info</h2>
+
+  <!-- Search Bar -->
+  <div class="searchbar field has-addons">
+    <div class="control is-expanded">
+      <input class="input" type="text" placeholder="Search for a bird..." v-model="current_query">
+    </div>
+    <div class="control">
+      <button class="button is-info" @click="select_query">
+        Search
+      </button>
+    </div>
+  </div>
+
+  <!-- Buttons for First Seen and Recently Seen -->
+  <div class="field is-grouped">
+    <div class="control">
+      <button class="button is-primary" @click="set_first_seen">
+        First Seen
+      </button>
+    </div>
+    <div class="control">
+      <button class="button is-primary" @click="set_recently_seen">
+        Recently Seen
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content with Columns -->
+  <div class="columns">
+    <!-- Bird List -->
+    <div class="column is-half">
+      <div class="birds list-container">
+        <div class="scrollable-list">
+          <div class="box bird-box" v-for="bird in filtered_list" :key="bird.species_id" @click="select_bird(bird)">
+            <p><strong>Bird Name:</strong> {{bird.common_name}}</p>
+            <p><strong>Species ID:</strong> {{bird.species_id}}</p>
+            <p><strong>Observation Count:</strong> {{bird.observation_count}}</p>
+            <p><strong>Observation Date:</strong> {{bird.observation_date}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bird Details -->
+    <div class="column is-half" v-if="selected_bird">
+      <div class="box">
+        <h3 class="title is-size-5">Selected Bird Details</h3>
+        <p><strong>Bird Name:</strong> {{selected_bird.common_name}}</p>
+        <p><strong>Species ID:</strong> {{selected_bird.species_id}}</p>
+        <p><strong>Observation Count:</strong> {{selected_bird.observation_count}}</p>
+        <p><strong>Observation Date:</strong> {{selected_bird.observation_date}}</p>
+        <p><strong>Latitude:</strong> {{selected_bird.latitude}}</p>
+        <p><strong>Longitude:</strong> {{selected_bird.longitude}}</p>
+        <p><strong>Time Observations Started:</strong> {{selected_bird.time_observations_started}}</p>
+        <p><strong>Duration Minutes:</strong> {{selected_bird.duration_minutes}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+  let user_statistics_url  = "[[=XML(user_statistics_url)]]";
+</script>
+<script src="js/statistics.js"></script>
+
+[[end]]

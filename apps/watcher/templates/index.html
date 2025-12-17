@@ -1,0 +1,102 @@
+
+[[extend 'layout.html']]
+
+[[block page_head]]
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+[[end]]
+
+<style>
+[v-cloak] {
+     display: none;
+}
+.dropdown-content {
+    max-height: 200px; 
+    overflow-y: auto;
+}
+#search-bar, .dropdown-content {
+    width: 600px;
+    margin-right: 40px;
+}
+
+form > div {
+    margin-bottom: 16px;
+}
+form {
+    margin-left: 44px;
+    margin-top: 24px;
+}
+</style>
+
+<div class="section" id="app" v-cloak>
+  <div class="section">
+    <h1 class="title">Welcome to Bird Watcher!</h1>
+
+    <h3>To start, please feel free to search for any specific species you would like to view or draw a rectangle on the map to view specific statistics about the selected region.</h3>
+    <h3>In addition, you can use the "Enter Checklist" button to enter your own bird sightings information.</h3>
+    <h3>Make sure to checkout your own viewing statistics by clicking on the "My Birding" button!</h3>
+    <br></br>
+ 
+    <button class="button is-primary" @click="goToStatisticsPage" style="margin-right: 10px;">My Birding</button> <!-- MODIFIED: Added @click event to the button -->
+
+    <!-- Modified: Added button to enter checklist page -->
+    <button class="button is-primary" @click="goToChecklistPage">Enter Checklist</button>
+    <br></br>
+ 
+  <!-- Search Dropdown for Species -->
+    <div class="dropdown is-active" id="vue-target" v-cloak  style="z-index: 1000;">
+      <div class="dropdown-trigger">
+        <input class="input" id="search-bar" type="text" v-model="query" @input="search" placeholder="Search species..." is-loading style="width: 600px;"/>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <a v-for="option in species" :key="option.id" class="dropdown-item" @click="selectSpecies(option)">
+            {{option.common_name}}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="map" style="height: 500px;"></div>
+
+  <form @submit.prevent="submitCoordinates">
+    <div style="margin-bottom: 16px;">
+      <!-- <label for="lat_min">Latitude Min:</label> -->
+      <input class="input" type="text" v-model="region.lat_min" id="lat_min" required placeholder="Latitude Min">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <!-- <label for="lat_max">Latitude Max:</label> -->
+      <input class="input" type="text" v-model="region.lat_max" id="lat_max" required placeholder="Latitude Max">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <!-- <label for="lon_min">Longitude Min:</label> -->
+      <input class="input" type="text" v-model="region.lon_min" id="lon_min" required placeholder="Longitude Min">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <!-- <label for="lon_max">Longitude Max:</label> -->
+      <input class="input" type="text" v-model="region.lon_max" id="lon_max" required placeholder="Longitude Max">
+    </div>
+    <button class="button is-success" type="submit">Get Region Information</button>
+  </form>
+</div>
+
+[[block page_scripts]]
+<script>
+  let search_species_url = "[[=URL('search_species_url')]]";
+  let get_sightings_url = "[[=XML(get_sightings_url)]]";
+  let get_species_url = "[[=XML(get_species_url)]]";
+  let location_url = "[[=XML(location_url)]]";
+  let statistics_url = "[[=XML(URL('statistics'))]]";
+  let checklist_url = "[[=URL('checklist')]]";
+</script>
+<!-- MODIFIED: Added statistics_url variable -->
+<!-- Modified: Added checklist URL -->
+<script src="js/index.js"></script>
+[[end]]

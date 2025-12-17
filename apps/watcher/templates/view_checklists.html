@@ -1,0 +1,86 @@
+[[extend 'layout.html']]
+
+<style>
+[v-cloak] {
+     display: none;
+}
+</style>
+
+
+
+<div class="section" id="app" v-cloak>
+    <h1 class="title">My Checklists: </h1>
+    <button class="button" @click="go_to_checklists">Return to Checklist Page</button>
+    <div class="container">
+
+     <!--<table class="table is-fullwidith">
+        <tr>
+          <th>Sampling Event ID</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+          <th>Duration (minutes)</th>
+        </tr>
+        <tr v-for="[checklist_id, checklist] in my_checklists">
+          <td class="item"><input class="input" type="text" v-model="checklist.sampling_event_identifier" disabled></td>
+          <td class="item"><input class="input" type="text" v-model="checklist.observation_date"></td>
+          <td class="item"><input class="input" type="text" v-model="checklist.time_observations_started"></td>
+          <td class="item"><input class="input" type="text" v-model="checklist.latitude"></td>
+          <td class="item"><input class="input" type="text" v-model="checklist.longitude"></td>
+          <td class="item"><input class="input" type="text" v-model="checklist.duration_minutes"></td>
+          <td><table class="table">
+            <tr v-for="sighting in filter_species(checklist_id)">
+              <td class="item"><input class="input" type="text" v-model="sighting.checklist_id"></td>
+            </tr>
+          </table>
+        </tr>
+      </table>-->
+      <table class="table is-fullwidith">
+        <tr v-for="[checklist_id, checklist] in my_checklists">
+          <td v-if="checklist.render != false">
+            <div class="card">
+              <header class="card-header">
+                <p class="card-header-title">{{checklist.sampling_event_identifier}}</p>
+              </header>
+              <div class="card-content">
+                Date:<input class="input" type="text" v-model="checklist.observation_date">
+                Time:<input class="input" type="text" v-model="checklist.time_observations_started">
+                Latitude:<input class="input" type="text" v-model="checklist.latitude">
+                Longitude:<input class="input" type="text" v-model="checklist.longitude">
+                Duration of Session:<input class="input" type="text" v-model="checklist.duration_minutes">
+                <button class="button" @click="add_row(checklist.id)">Add Bird Sighting To Checklist</button>
+                <table class="table is-fullwidith">
+                  <tr v-for="sighting in filter_species(checklist_id)">
+                    <td class="item"><input class="input" type="text" v-model="sighting.species.common_name" placeholder="Species Name"></td>
+                    <td class="item"><input class="input" type="observation_count" v-model="sighting.sightings.observation_count"></td>
+                    <td class="item"><button class="button" @click="delete_sighting(sighting)">Delete Sighting</button>"</td>
+                  </tr>
+                </table>  
+              </div>
+              <footer class="card-footer">
+                <button class="button" @click="submit_changes(checklist.id, checklist.observation_date, checklist.time_observations_started, checklist.latitude, checklist.longitude, checklist.duration_minutes)">Submit Changes</button>
+                <button class="button" @click="delete_checklist(checklist)">Delete Checklist</button>"
+              </footer>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+</div>
+
+
+
+[[block page_scripts]]
+<script>
+  let get_my_checklists_url = "[[=XML(get_my_checklists_url)]]";
+  let update_checklist_url = "[[=XML(update_checklist_url)]]";
+  let get_species_url = "[[=XML(get_species_url)]]";
+  let delete_sighting_url = "[[=XML(delete_sighting_url)]]";
+  let delete_checklist_url = "[[=XML(delete_checklist_url)]]";
+  let checklist_url = "[[=XML(checklist_url)]]";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.js"></script>
+<script src="js/view_checklists.js"></script> 
+[[end]]

@@ -1,0 +1,44 @@
+[[extend 'layout.html']]
+
+<style>
+[v-cloak] {
+     display: none;
+}
+</style>
+
+
+
+<div class="section" id="app" v-cloak>
+    <h1 class="title">Checklist</h1>
+    <h1 class="title" v-if="timer_running">Duration of Session: {{current_time}}</h1>
+    <input class="input add-item" type="text" name="bird_search" v-model="bird_search_text" @change="updateSearch(bird_search_text)"></input>
+    <button class="button" @click="toggle_timer">Start Timer</button>
+    <button class="button" @click="submit_checklist">Submit Checklist</button>
+    <button class="button" @click="go_to_my_checklists">My Checklists</button>
+    <button class="button" @click="go_to_index">Return to Home</button>
+    <div class="container">
+      <table class="table is-fullwidith is-striped">
+        <tr class="checklist_row" v-for = "species in filtered_species_list">
+          <div>
+            <td class="item">{{species.common_name}}</td>
+            <td><input class="input add-item" type="text" name="birds_seen" v-model="checklist_seen[species.id]" placeholder="Birds Seen"></td>
+            <td class="is-narrow"><button class="button" @click="incriment_seen(species.id)">Add Sighting</button>
+          </div>
+        </tr>
+      </table>
+    </div>
+</div>
+
+
+
+[[block page_scripts]]
+<script>
+  let get_species_url = "[[=XML(get_species_url)]]";
+  let post_checklist_url = "[[=XML(post_checklist_url)]]";
+  let index_url = "[[=XML(index_url)]]";
+  let my_checklist_url = "[[=XML(view_checklists_url)]]";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.js"></script>
+<script src="js/checklist.js"></script> 
+[[end]]

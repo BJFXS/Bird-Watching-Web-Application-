@@ -113,7 +113,8 @@ Ensure the following tools are installed:
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/bird-watching-app.git
+git clone https://github.com/BJFXS/Bird-Watching-Web-Application-.git
+
 cd bird-watching-app
 ```
 
